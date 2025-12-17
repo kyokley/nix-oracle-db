@@ -69,6 +69,10 @@ let
       rm -rf $out/opt/oracle/lib/pkgconfig
       rm -rf $out/opt/oracle/lib/cmake
 
+      # Remove any broken symlinks to satisfy Nix QA checks.
+      # Vendor RPMs can ship absolute symlinks to system paths which are invalid in the Nix store.
+      find -L "$out" -type l -print -delete
+
       runHook postInstall
     '';
   });
