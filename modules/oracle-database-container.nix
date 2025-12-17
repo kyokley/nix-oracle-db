@@ -96,7 +96,7 @@ in {
               RemainAfterExit = false;
               ExecStart = pkgs.writeShellScript "oracle-database-secret-setup" ''
                 ${lib.getExe ociEnginePkg} secret rm --ignore oracle_pwd
-                ${lib.getExe ociEnginePkg} secret create oracle_pwd %d/oracle_pwd
+                ${lib.getExe ociEnginePkg} secret create oracle_pwd ${cfg.passwordFile}
               '';
               LoadCredential = ["oracle_pwd:${cfg.passwordFile}"];
             };
@@ -122,8 +122,7 @@ in {
         };
 
       virtualisation = {
-        podman.defaultNetwork.settings.dns_enabled = true;
-
+        diskSize = 20240;
         oci-containers.containers = {
           oracledb = {
             inherit image;
