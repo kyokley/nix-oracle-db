@@ -3,15 +3,13 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   cfg = config.services.oracle-database;
-in
-{
+in {
   options = {
     services.oracle-database = {
       enable = lib.mkEnableOption (lib.mdDoc "Oracle Database");
-      package = lib.mkPackageOptionMD pkgs "oracle-database" { };
+      package = lib.mkPackageOptionMD pkgs "oracle-database" {};
     };
   };
 
@@ -40,8 +38,8 @@ in
 
     systemd.services.oracle-database = {
       description = "Oracle Database";
-      wantedBy = [ "multi-user.target" ];
-      after = [ "network.target" ];
+      wantedBy = ["oracle-database.target"];
+      after = ["network.target"];
       preStart = ''
         mkdir -p $STATE_DIRECTORY/oradata
         cat /etc/oratab
@@ -53,8 +51,14 @@ in
         DynamicUser = true;
         PrivateTmp = "yes";
         Restart = "on-failure";
-        Environment = [ ];
+        Environment = [];
       };
+    };
+
+    systemd.targets."oracle-database" = {
+      description = "Oracle Database Target";
+      wantedBy = ["multi-user.target"];
+      after = ["network.target"];
     };
   };
 }
