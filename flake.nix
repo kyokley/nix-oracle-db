@@ -35,6 +35,11 @@
           packages.oracle-database-test = pkgs.testers.runNixOSTest ./tests/integration/oracle-database.nix;
           packages.oracle-database-container-test = pkgs.testers.runNixOSTest ./tests/integration/oracle-database-container.nix;
 
+          checks = {
+            oracle-database = pkgs.testers.runNixOSTest ./tests/integration/oracle-database.nix;
+            oracle-database-container = pkgs.testers.runNixOSTest ./tests/integration/oracle-database-container.nix;
+          };
+
           overlayAttrs = {
             oracle-database = self'.packages.oracle-database;
           };
