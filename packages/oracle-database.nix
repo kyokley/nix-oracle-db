@@ -62,8 +62,8 @@ let
       mkdir -p $out/opt/oracle
       cp -ar {etc,usr} $out/
       cp -ar opt/oracle/product/${finalAttrs.version}/dbhomeFree/* $out/opt/oracle
-      ln -s $out/opt/oracle/bin $out/bin
-      ln -s $out/opt/oracle/lib $out/lib
+      cp -ar $out/opt/oracle/bin $out/bin
+      cp -ar $out/opt/oracle/lib $out/lib
 
       # to be confirmed: Remove these files as they are not needed.
       rm -rf $out/opt/oracle/lib/pkgconfig
