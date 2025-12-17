@@ -13,8 +13,8 @@
   su,
   gawk,
   gnugrep,
-  hostname,
-  coreutils,
+  hostname
+  , coreutils
 }:
 let
   oracle-database-unwrapped = stdenvNoCC.mkDerivation (finalAttrs: {
