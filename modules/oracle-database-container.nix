@@ -3,13 +3,11 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   inherit (lib) mkIf mkOption types;
 
   cfg = config.services.oracle-database-container;
-in
-{
+in {
   options = {
     services.oracle-database-container = {
       enable = lib.mkEnableOption "the Oracle Database server";
@@ -83,17 +81,16 @@ in
     };
   };
 
-  config =
-    let
-      image = "container-registry.oracle.com/database/free:${cfg.version}";
-      ociEnginePkg = pkgs."${cfg.ociEngine}";
-    in
+  config = let
+    image = "container-registry.oracle.com/database/free:${cfg.version}";
+    ociEnginePkg = pkgs."${cfg.ociEngine}";
+  in
     lib.mkIf cfg.enable {
       systemd.services =
         lib.optionalAttrs (cfg.passwordFile != null) {
           "${cfg.ociEngine}-database-secret-setup" = {
-            wantedBy = [ "${cfg.ociEngine}-oracledb.service" ];
-            before = [ "${cfg.ociEngine}-oracledb.service" ];
+            wantedBy = ["${cfg.ociEngine}-oracledb.service"];
+            before = ["${cfg.ociEngine}-oracledb.service"];
             serviceConfig = {
               Type = "oneshot";
               RemainAfterExit = false;
@@ -101,14 +98,14 @@ in
                 ${lib.getExe ociEnginePkg} secret rm --ignore oracle_pwd
                 ${lib.getExe ociEnginePkg} secret create oracle_pwd %d/oracle_pwd
               '';
-              LoadCredential = [ "oracle_pwd:${cfg.passwordFile}" ];
+              LoadCredential = ["oracle_pwd:${cfg.passwordFile}"];
             };
           };
         }
         // lib.optionalAttrs cfg.copyInitialFilesToDirectory {
           "${cfg.ociEngine}-database-volume-setup" = {
-            wantedBy = [ "${cfg.ociEngine}-oracledb.service" ];
-            before = [ "${cfg.ociEngine}-oracledb.service" ];
+            wantedBy = ["${cfg.ociEngine}-oracledb.service"];
+            before = ["${cfg.ociEngine}-oracledb.service"];
             serviceConfig = {
               Type = "oneshot";
               RemainAfterExit = false;
@@ -140,13 +137,13 @@ in
               # if you dont have anything to exclude, remove the variable
               # EXCLUDE = "user";
             };
-            ports = [ "${toString cfg.port}:1521" ];
-            volumes = [ ] ++ lib.optionals (null != cfg.volumeName) [ "${cfg.volumeName}:/opt/oracle/oradata" ];
-            extraOptions = [ "--secret=oracle_pwd" ];
+            ports = ["${toString cfg.port}:1521"];
+            volumes = [] ++ lib.optionals (null != cfg.volumeName) ["${cfg.volumeName}:/opt/oracle/oradata"];
+            extraOptions = ["--secret=oracle_pwd"];
           };
         };
       };
 
-      networking.firewall = mkIf cfg.openFirewall { allowedTCPPorts = [ cfg.port ]; };
+      networking.firewall = mkIf cfg.openFirewall {allowedTCPPorts = [cfg.port];};
     };
 }
