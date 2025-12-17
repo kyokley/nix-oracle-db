@@ -40,7 +40,7 @@ in
 
     systemd.services.oracle-database = {
       description = "Oracle Database";
-      wantedBy = [ "multi-user.target" ];
+      wantedBy = [ "oracle-database.target" ];
       after = [ "network.target" ];
       preStart = ''
         mkdir -p $STATE_DIRECTORY/oradata
@@ -55,6 +55,12 @@ in
         Restart = "on-failure";
         Environment = [ ];
       };
+    };
+
+    systemd.targets."oracle-database" = {
+      description = "Oracle Database Target";
+      wantedBy = [ "multi-user.target" ];
+      after = [ "network.target" ];
     };
   };
 }
