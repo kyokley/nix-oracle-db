@@ -14,7 +14,7 @@ in {
 
       port = mkOption {
         default = 1521;
-        description = "The TCP port Audiobookshelf will listen on.";
+        description = "The TCP port database will listen on.";
         type = types.port;
       };
 
