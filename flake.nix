@@ -43,6 +43,10 @@
       flake = {
         nixosModules.oracle-database = import ./modules/oracle-database.nix;
         nixosModules.oracle-database-container = import ./modules/oracle-database-container.nix;
+
+        # New: expose the overlay and module via flake outputs
+        overlays.oracle-database = import ./overlays/oracle-database.nix;
+        nixosModules.oracle-database-overlay = import ./modules/oracle-database-overlay.nix;
       };
     };
 }
