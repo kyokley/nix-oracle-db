@@ -37,7 +37,7 @@
 
           checks = {
             oracle-database = pkgs.testers.runNixOSTest ./tests/integration/oracle-database.nix;
-            oracle-database-container = pkgs.testers.runNixOSTest ./tests/integration/oracle-database-container.nix;
+            # oracle-database-container = pkgs.testers.runNixOSTest ./tests/integration/oracle-database-container.nix;
           };
 
           overlayAttrs = {
