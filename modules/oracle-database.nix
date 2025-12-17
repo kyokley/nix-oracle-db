@@ -9,7 +9,7 @@ in {
   options = {
     services.oracle-database = {
       enable = lib.mkEnableOption (lib.mdDoc "Oracle Database");
-      package = lib.mkPackageOptionMD pkgs "oracle-database" {};
+      package = lib.mkPackageOption pkgs "oracle-database" {};
     };
   };
 
