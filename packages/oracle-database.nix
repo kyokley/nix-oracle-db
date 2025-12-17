@@ -104,6 +104,12 @@ stdenvNoCC.mkDerivation {
     runHook preInstall
 
     mkdir -p $out
+    mkdir -p $out/etc
+
+    # Create a default oratab so builds and tests can find it.
+    cat > $out/etc/oratab <<EOF
+free:/var/lib/oracle-database/oradata/free:N
+EOF
 
     find ${oracle-database-unwrapped}/opt/oracle/bin -type f -executable -print0 | while read -d $'\0' executable
     do
