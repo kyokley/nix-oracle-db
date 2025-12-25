@@ -13,8 +13,8 @@
   su,
   gawk,
   gnugrep,
-  hostname,
-  coreutils,
+  hostname
+  , coreutils
 }:
 let
   oracle-database-unwrapped = stdenvNoCC.mkDerivation (finalAttrs: {
@@ -62,12 +62,16 @@ let
       mkdir -p $out/opt/oracle
       cp -ar {etc,usr} $out/
       cp -ar opt/oracle/product/${finalAttrs.version}/dbhomeFree/* $out/opt/oracle
-      ln -s $out/opt/oracle/bin $out/bin
-      ln -s $out/opt/oracle/lib $out/lib
+      cp -ar $out/opt/oracle/bin $out/bin
+      cp -ar $out/opt/oracle/lib $out/lib
 
       # to be confirmed: Remove these files as they are not needed.
       rm -rf $out/opt/oracle/lib/pkgconfig
       rm -rf $out/opt/oracle/lib/cmake
+
+      # Remove any broken symlinks to satisfy Nix QA checks.
+      # Vendor RPMs can ship absolute symlinks to system paths which are invalid in the Nix store.
+      find -L "$out" -type l -print -delete
 
       runHook postInstall
     '';
@@ -104,6 +108,12 @@ stdenvNoCC.mkDerivation {
     runHook preInstall
 
     mkdir -p $out
+    mkdir -p $out/etc
+
+    # Create a default oratab so builds and tests can find it.
+    cat > $out/etc/oratab <<EOF
+free:/var/lib/oracle-database/oradata/free:N
+EOF
 
     find ${oracle-database-unwrapped}/opt/oracle/bin -type f -executable -print0 | while read -d $'\0' executable
     do
