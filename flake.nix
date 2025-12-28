@@ -39,6 +39,31 @@
         overlayAttrs = {
           oracle-database = self'.packages.oracle-database;
         };
+
+        checks = {
+          moduleTest = pkgs.testers.runNixOSTest {
+            name = "moduleTest";
+            nodes = {
+              db = {
+                imports = [
+                  ./modules/oracle-database-container.nix
+                ];
+
+                services.oracle-database-container = {
+                  enable = true;
+                  passwordFile = ./password.txt;
+                  # Explicitly use the package from the nix-oracle-db flake,
+                  # avoiding reliance on pkgs having an overlay.
+                  # package = self'.packages.oracle-database;
+                  openFirewall = true;
+                };
+              };
+            };
+            testScript = ''
+              start_all()
+            '';
+          };
+        };
       };
 
       flake = {
