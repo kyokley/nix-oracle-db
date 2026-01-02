@@ -19,11 +19,11 @@
 let
   oracle-database-unwrapped = stdenvNoCC.mkDerivation (finalAttrs: {
     pname = "oracle-database-unwrapped";
-    version = "23c";
+    version = "26ai";
 
     src = fetchurl {
-      url = "https://download.oracle.com/otn-pub/otn_software/db-free/oracle-database-free-23c-1.0-1.el8.x86_64.rpm";
-      hash = "sha256-Exm818twbLcnUBy9mKvz85gKT9q+thOhq//HVpJcc3Q=";
+      url = "https://download.oracle.com/otn-pub/otn_software/db-free/oracle-ai-database-free-26ai-23.26.0-1.el8.x86_64.rpm";
+      hash = "sha256-7ZT4eNi1O6bC/9qhs8wF5jyVuAdu372RzHg0pMCJgos=";
     };
 
     nativeBuildInputs = [ rpmextract ];
@@ -41,7 +41,7 @@ let
       substituteInPlace opt/oracle/product/${finalAttrs.version}/dbhomeFree/OPatch/emdpatch.pl \
         --replace "#!/usr/bin/env PERL5OPT=-T perl" "#!/usr/bin/env -S PERL5OPT=-T perl"
       # This script can only be run by root. This changes prevent that. Not sure at all about this yet.
-      substituteInPlace etc/init.d/oracle-free-23c \
+      substituteInPlace etc/init.d/oracle-free-26ai \
         --replace "/opt/oracle/product/23c/dbhomeFree" ${placeholder "out"}/opt/oracle \
         --replace 'if [ $(id -u) != "0" ]' 'if false' \
         --replace 'SS=/usr/sbin/ss' 'SS=${iproute2}/bin/ss' \

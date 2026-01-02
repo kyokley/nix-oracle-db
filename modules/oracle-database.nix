@@ -38,7 +38,7 @@ in {
       free:/var/lib/oracle-database/oradata/free:N
     '';
 
-    environment.etc."sysconfig/oracle-free-23c.conf".text = ''
+    environment.etc."sysconfig/oracle-free-26ai.conf".text = ''
       # LISTENER PORT used Database listener, Leave empty for automatic port assignment
       LISTENER_PORT=${toString cfg.port}
 
@@ -63,7 +63,7 @@ in {
       preStart = ''
         mkdir -p $STATE_DIRECTORY/oradata
         cat /etc/oratab
-        cat /etc/sysconfig/oracle-free-23c.conf
+        cat /etc/sysconfig/oracle-free-26ai.conf
       '';
       serviceConfig = {
         ExecStart = "${cfg.package}/bin/dbstart /var/lib/oracle-database/oradata";
