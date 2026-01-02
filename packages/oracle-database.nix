@@ -13,8 +13,7 @@
   su,
   gawk,
   gnugrep,
-  hostname
-  , coreutils
+  hostname, coreutils, logger, ps
 }:
 let
   oracle-database-unwrapped = stdenvNoCC.mkDerivation (finalAttrs: {
@@ -41,6 +40,11 @@ let
       substituteInPlace opt/oracle/product/${finalAttrs.version}/dbhomeFree/OPatch/emdpatch.pl \
         --replace "#!/usr/bin/env PERL5OPT=-T perl" "#!/usr/bin/env -S PERL5OPT=-T perl"
       # This script can only be run by root. This changes prevent that. Not sure at all about this yet.
+      substituteInPlace opt/oracle/product/${finalAttrs.version}/dbhomeFree/bin/dbstart \
+        --replace "ORATAB=/etc/oratab" 'ORATAB="''${ORATAB:=/etc/oratab}"' \
+        --replace "ps" '${ps}/bin/ps' \
+        --replace 'LOGMSG="logger -puser.alert -s "' 'LOGMSG="${logger}/bin/logger -puser.alert -s "'
+
       substituteInPlace etc/init.d/oracle-free-26ai \
         --replace "/opt/oracle/product/23c/dbhomeFree" ${placeholder "out"}/opt/oracle \
         --replace 'if [ $(id -u) != "0" ]' 'if false' \
@@ -112,13 +116,14 @@ stdenvNoCC.mkDerivation {
 
     # Create a default oratab so builds and tests can find it.
     cat > $out/etc/oratab <<EOF
-free:/var/lib/oracle-database/oradata/free:N
+free:/var/lib/oracle-database/oradata/free:Y
 EOF
 
     find ${oracle-database-unwrapped}/opt/oracle/bin -type f -executable -print0 | while read -d $'\0' executable
     do
       makeWrapper ${lib.getExe fhs} $out/bin/$(basename $executable) \
         --set-default ORACLE_HOME ${oracle-database-unwrapped}/opt/oracle \
+        --set-default ORATAB $out/etc/oratab \
         --add-flags $executable
     done
 

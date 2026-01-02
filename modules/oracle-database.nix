@@ -34,9 +34,12 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    environment.etc."oratab".text = ''
-      free:/var/lib/oracle-database/oradata/free:N
-    '';
+    environment.etc."oratab" = {
+      mode = "0755";
+      text = ''
+        free:/var/lib/oracle-database/oradata/free:N
+      '';
+    };
 
     environment.etc."sysconfig/oracle-free-26ai.conf".text = ''
       # LISTENER PORT used Database listener, Leave empty for automatic port assignment
