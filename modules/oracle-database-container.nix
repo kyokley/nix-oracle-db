@@ -53,7 +53,7 @@ in {
           oracledb = {
             inherit image;
             environment = {
-              ORACLE_PASSWORD_FILE = toString cfg.passwordFile;
+              ORACLE_PASSWORD_FILE = lib.mkIf (cfg.passwordFile != null) (toString cfg.passwordFile);
             };
             ports = ["${cfg.listenAddress}:${toString cfg.port}:1521"];
             volumes = [

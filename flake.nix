@@ -49,7 +49,9 @@
 
                   services.oracle-database-container = {
                     enable = true;
-                    passwordFile = null;
+                    passwordFile = toString (builtins.toFile "password.txt" ''
+                    password
+                    '');
                     # Explicitly use the package from the nix-oracle-db flake,
                     # avoiding reliance on pkgs having an overlay.
                     # package = self'.packages.oracle-database;
