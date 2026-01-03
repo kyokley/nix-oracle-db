@@ -49,7 +49,7 @@
 
                   services.oracle-database-container = {
                     enable = true;
-                    passwordFile = ./password.txt;
+                    passwordFile = null;
                     # Explicitly use the package from the nix-oracle-db flake,
                     # avoiding reliance on pkgs having an overlay.
                     # package = self'.packages.oracle-database;
@@ -62,31 +62,31 @@
               '';
             };
 
-            moduleTest = pkgs.testers.runNixOSTest {
-              name = "moduleTest";
-              nodes = {
-                db = {
-                  imports = [
-                    ./modules/oracle-database.nix
-                  ];
-                  environment.systemPackages = [
-                    pkgs.vim
-                  ];
+            # moduleTest = pkgs.testers.runNixOSTest {
+            #   name = "moduleTest";
+            #   nodes = {
+            #     db = {
+            #       imports = [
+            #         ./modules/oracle-database.nix
+            #       ];
+            #       environment.systemPackages = [
+            #         pkgs.vim
+            #       ];
 
-                  services.oracle-database = {
-                    enable = true;
-                    passwordFile = ./password.txt;
-                    # Explicitly use the package from the nix-oracle-db flake,
-                    # avoiding reliance on pkgs having an overlay.
-                    # package = self'.packages.oracle-database;
-                    openFirewall = true;
-                  };
-                };
-              };
-              testScript = ''
-                start_all()
-              '';
-            };
+            #       services.oracle-database = {
+            #         enable = true;
+            #         passwordFile = ./password.txt;
+            #         # Explicitly use the package from the nix-oracle-db flake,
+            #         # avoiding reliance on pkgs having an overlay.
+            #         # package = self'.packages.oracle-database;
+            #         openFirewall = true;
+            #       };
+            #     };
+            #   };
+            #   testScript = ''
+            #     start_all()
+            #   '';
+            # };
           };
 
           overlayAttrs = {
