@@ -41,9 +41,9 @@ in {
         type = types.bool;
       };
 
-      initScriptDir = mkOption {
+      initScript = mkOption {
         default = null;
-        description = "Path to directory containing initialization scripts";
+        description = "Path to file containing initialization commands";
         type = types.nullOr types.path;
       };
     };
@@ -67,8 +67,8 @@ in {
               "${toString cfg.passwordFile}:${toString cfg.passwordFile}"
             ];
           }// {
-            volumes = lib.mkIf (cfg.initScriptDir != null) [
-              "${toString cfg.initScriptDir}:/container-entrypoint-initdb.d"
+            volumes = lib.mkIf (cfg.initScript != null) [
+              "${toString cfg.initScript}:/container-entrypoint-initdb.d/01_create.sql"
             ];
           };
         };
