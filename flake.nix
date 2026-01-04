@@ -56,6 +56,7 @@
                     # avoiding reliance on pkgs having an overlay.
                     # package = self'.packages.oracle-database;
                     openFirewall = true;
+                    initScriptDir = null;
                   };
                 };
               };
