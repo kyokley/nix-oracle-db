@@ -40,6 +40,11 @@ in {
         description = "Open ports in the firewall";
         type = types.bool;
       };
+
+      initScriptDir = mkOption {
+        description = "Path to directory containing initialization scripts";
+        type = types.nullOr types.path;
+      };
     };
   };
 
@@ -59,6 +64,7 @@ in {
             volumes = [
               "oracle-volume:/opt/oracle/oradata"
               "${toString cfg.passwordFile}:${toString cfg.passwordFile}"
+              lib.mkIf (cfg.initScriptDir != null) "${toString cfg.initScriptDir}:/container-entrypoint-initdb.d"
             ];
           };
         };
