@@ -61,11 +61,12 @@ in {
               ORACLE_PASSWORD_FILE = lib.mkIf (cfg.passwordFile != null) (toString cfg.passwordFile);
             };
             ports = ["${cfg.listenAddress}:${toString cfg.port}:1521"];
-            volumes = [
-              "oracle-volume:/opt/oracle/oradata"
-              "${toString cfg.passwordFile}:${toString cfg.passwordFile}"
-              lib.mkIf (cfg.initScriptDir != null) "${toString cfg.initScriptDir}:/container-entrypoint-initdb.d"
-            ];
+            volumes =
+              [
+                "oracle-volume:/opt/oracle/oradata"
+                "${toString cfg.passwordFile}:${toString cfg.passwordFile}"
+              ]
+              // lib.mkIf (cfg.initScriptDir != null) ["${toString cfg.initScriptDir}:/container-entrypoint-initdb.d"];
           };
         };
         podman = {
