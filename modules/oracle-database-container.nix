@@ -31,6 +31,7 @@ in {
       };
 
       passwordFile = mkOption {
+        default = null;
         type = types.nullOr types.path;
         description = "Path to file containing the Oracle Database SYS, SYSTEM and PDB_ADMIN password.";
       };
@@ -46,6 +47,18 @@ in {
         description = "Path to file containing initialization commands";
         type = types.nullOr types.path;
       };
+
+      appUser = mkOption {
+        default = "some_user";
+        description = "Name of database user";
+        type = types.str;
+      };
+
+      appUserPasswordFile = mkOption {
+        default = null;
+        type = types.nullOr types.path;
+        description = "Path to file containing the Oracle Database password for the appUser";
+      };
     };
   };
 
@@ -60,6 +73,8 @@ in {
             inherit image;
             environment = {
               ORACLE_PASSWORD_FILE = lib.mkIf (cfg.passwordFile != null) (toString cfg.passwordFile);
+              APP_USER = cfg.appUser;
+              APP_USER_PASSWORD_FILE = lib.mkIf (cfg.appUserPasswordFile != null) (toString cfg.appUserPasswordFile);
             };
             ports = ["${cfg.listenAddress}:${toString cfg.port}:1521"];
             volumes = [
